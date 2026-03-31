@@ -6,14 +6,14 @@ import streamlit as st
 from datetime import datetime
 import time
 import os
-#from dotenv import load_dotenv
+from dotenv import load_dotenv
 
 from workflow import StoryGameWorkflow
 from game_state import GameState, Message
 from story_beats import get_first_beat, get_beat
 
 # 환경 변수 로드
-#load_dotenv()
+load_dotenv()
 
 
 def initialize_session_state():
@@ -49,9 +49,17 @@ def initialize_session_state():
         )
 
     if "workflow" not in st.session_state:
-        api_key = os.getenv("OPENAI_API_KEY")
+        # Streamlit Cloud의 secrets 사용 (배포 시)
+        # 로컬에서는 .env 파일 사용
+        try:
+            api_key = st.secrets["OPENAI_API_KEY"]
+        except (KeyError, FileNotFoundError):
+            # secrets가 없으면 환경 변수에서 가져오기
+            api_key = os.getenv("OPENAI_API_KEY")
+
         if not api_key:
-            st.error("⚠️ OPENAI_API_KEY가 설정되지 않았습니다. .env 파일을 확인해주세요.")
+            st.error("⚠️ OPENAI_API_KEY가 설정되지 않았습니다.")
+            st.info("**로컬 실행**: .env 파일에 API 키를 추가하세요.\n\n**Streamlit Cloud**: Settings > Secrets에서 OPENAI_API_KEY를 설정하세요.")
             st.stop()
 
         st.session_state.workflow = StoryGameWorkflow(api_key=api_key)
