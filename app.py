@@ -13,7 +13,7 @@ from game_state import GameState, Message
 from story_beats import get_first_beat, get_beat
 
 # 환경 변수 로드
-load_dotenv()
+#load_dotenv()
 
 
 def initialize_session_state():
