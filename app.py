@@ -6,14 +6,17 @@ import streamlit as st
 from datetime import datetime
 import time
 import os
-from dotenv import load_dotenv
+
+# 로컬 환경에서만 dotenv 사용 (Streamlit Cloud에서는 불필요)
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
 
 from workflow import StoryGameWorkflow
 from game_state import GameState, Message
 from story_beats import get_first_beat, get_beat
-
-# 환경 변수 로드
-load_dotenv()
 
 
 def initialize_session_state():
